@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // App directory is now stable in Next.js 13+, no need for experimental flag
+  // Configuration for sandbox/container environment
+  experimental: {
+    serverMinification: false,
+  },
+  // Disable webpack cache to avoid memory issues
+  webpack: (config) => {
+    config.cache = false;
+    return config;
+  },
 };
 
 export default nextConfig;

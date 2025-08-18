@@ -22,15 +22,15 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link href="/static/style.css" rel="stylesheet" />
+      </head>
+      <body className={inter.className}>
+        {children}
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js" async />
         <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" async />
         <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js" async />
         <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4.20.0/dist/algoliasearch-lite.umd.js" async />
         <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4.56.8/dist/instantsearch.production.min.js" async />
         <script src="/static/analytics.js" async />
-      </head>
-      <body className={inter.className}>
-        {children}
       </body>
     </html>
   )
