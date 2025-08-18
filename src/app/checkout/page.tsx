@@ -4,6 +4,19 @@ import { Layout } from '@/components/Layout';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// Helper to get cart from localStorage
+function getCartFromStorage() {
+  try {
+    const saved = localStorage.getItem('fashionstore_cart');
+    if (saved) {
+      const items = JSON.parse(saved);
+      const total = items.reduce((sum: number, item: any) => sum + (item.product.price * item.quantity), 0);
+      return { items, total };
+    }
+  } catch {}
+  return { items: [], total: 0 };
+}
+
 export default function Checkout() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
@@ -11,6 +24,7 @@ export default function Checkout() {
   const [formData, setFormData] = useState({
     email: '',
     name: '',
+    phone: '', // <-- add phone
     address: {
       street: '',
       city: '',
@@ -28,58 +42,42 @@ export default function Checkout() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check authentication status and load cart
-    const checkAuthAndLoadCart = async () => {
-      try {
-        const [authResponse, cartResponse] = await Promise.all([
-          fetch('/api/auth/status'),
-          fetch('/api/cart')
-        ]);
-
-        const authData = await authResponse.json();
-        if (authData.isAuthenticated) {
-          setCurrentUser(authData.user);
-          setFormData(prev => ({
-            ...prev,
-            email: authData.user.email,
-            name: authData.user.name
-          }));
-        }
-
-        const cartData = await cartResponse.json();
-        setCart(cartData);
-
-        if (cartData.items.length === 0) {
-          router.push('/');
-        }
-      } catch (error) {
-        console.error('Error loading data:', error);
-      }
-    };
-
-    checkAuthAndLoadCart();
+    // Only load cart from localStorage (no auth check)
+    const cartData = getCartFromStorage();
+    setCart(cartData);
+    if (cartData.items.length === 0) {
+      router.push('/');
+    }
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, cart: cart.items }),
       });
-
       const data = await response.json();
-
       if (data.success) {
-        // Redirect to success page or show success message
-        alert(`Order placed successfully! Order ID: ${data.orderId}`);
-        router.push('/');
+        // Save order summary to localStorage for thank you page
+        localStorage.setItem('fashionstore_last_order', JSON.stringify({
+          orderId: data.orderId,
+          total: data.total,
+          items: cart.items,
+          shipping: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address
+          }
+        }));
+        // Redirect to thank you page with order details
+        router.push(`/checkout/thank-you?orderId=${encodeURIComponent(data.orderId)}&total=${encodeURIComponent(data.total)}`);
       } else {
         setError(data.error || 'Checkout failed');
       }
@@ -143,6 +141,15 @@ export default function Checkout() {
                     name="name"
                     placeholder="Full Name"
                     value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData.phone}
                     onChange={handleChange}
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"

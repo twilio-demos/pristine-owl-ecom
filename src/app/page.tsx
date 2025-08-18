@@ -3,6 +3,7 @@
 import { Layout } from '@/components/Layout';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import AlgoliaSearch from '@/components/AlgoliaSearch';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -43,11 +44,10 @@ export default function Home() {
       {/* Featured Products */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="text-3xl font-bold text-center mb-12">Featured Products</h2>
-        
-        {/* Algolia InstantSearch Container - will be handled by app.js */}
-        <div id="featured-search-container" className="mb-12">
-          <div id="featured-hits"></div>
-        </div>
+        <AlgoliaSearch 
+          indexName={process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev_ecommerce'}
+          hitsPerPage={8}
+        />
 
         {/* Collection Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">

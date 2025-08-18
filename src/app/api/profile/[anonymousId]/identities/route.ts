@@ -21,7 +21,7 @@ export async function GET(
 
     const resolvedParams = await params;
     const auth = Buffer.from(`${profileApiKey}:`).toString('base64');
-    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${resolvedParams.anonymousId}/identities?limit=${limit}`;
+    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${resolvedParams.anonymousId}/external_ids?limit=${limit}`;
 
 
     const response = await fetch(url, {

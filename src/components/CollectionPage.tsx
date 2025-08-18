@@ -2,6 +2,7 @@
 
 import { Layout } from '@/components/Layout';
 import { useEffect, useState } from 'react';
+import AlgoliaSearch from '@/components/AlgoliaSearch';
 
 interface CollectionPageProps {
   collection: string;
@@ -46,22 +47,16 @@ export default function CollectionPage({ collection, title, description, imageUr
 
       {/* Algolia Search Container */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Search Stats */}
-        <div id={`${collection}-stats`} className="mb-6">
-          <div id={`${collection}-results-count`} className="text-gray-600"></div>
-        </div>
-
-        {/* Product Grid */}
-        <div id={`${collection}-search-container`}>
-          <div id={`${collection}-hits`} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {/* Products will be loaded by Algolia InstantSearch */}
-          </div>
-        </div>
-
-        {/* Pagination */}
-        <div id={`${collection}-pagination`} className="flex justify-center mt-12">
-          {/* Pagination will be loaded by Algolia InstantSearch */}
-        </div>
+        <AlgoliaSearch 
+          indexName={process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev_ecommerce'}
+          filters={(() => {
+            if (collection === 'new-arrivals') return ['isNewProduct:true'];
+            if (collection === 'shoes') return ['type:shoes'];
+            if (collection === 'apparel') return ['type:clothing'];
+            return [`category:${collection}`];
+          })()}
+          hitsPerPage={12}
+        />
       </section>
     </Layout>
   );

@@ -16,20 +16,27 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Check authentication status
+    // Check localStorage for user info first
+    const storedUser = typeof window !== 'undefined' ? localStorage.getItem('fashionstore_user') : null;
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+      router.push('/');
+      return;
+    }
+    // Check authentication status from API
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/auth/status');
         const data = await response.json();
         if (data.isAuthenticated) {
           setCurrentUser(data.user);
+          localStorage.setItem('fashionstore_user', JSON.stringify(data.user));
           router.push('/'); // Redirect if already logged in
         }
       } catch (error) {
         console.error('Error checking auth status:', error);
       }
     };
-
     checkAuth();
   }, [router]);
 
@@ -50,6 +57,7 @@ export default function Login() {
       const data = await response.json();
 
       if (data.success) {
+        localStorage.setItem('fashionstore_user', JSON.stringify(data.user));
         router.push('/');
       } else {
         setError(data.error || 'Login failed');

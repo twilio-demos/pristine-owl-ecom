@@ -1,16 +1,20 @@
 'use client';
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import CartSidebar from './CartSidebar';
 
 interface Props {
   children: ReactNode;
   currentUser?: any;
 }
 
-export const Layout: React.FC<Props> = ({ children, currentUser }) => {
+export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentUser }) => {
+  const [cartOpen, setCartOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(initialCurrentUser || null);
+  const [cartCount, setCartCount] = useState(0);
+
   useEffect(() => {
     // Load external scripts on client side
     if (typeof window !== 'undefined') {
@@ -20,8 +24,28 @@ export const Layout: React.FC<Props> = ({ children, currentUser }) => {
       script.async = true;
       document.body.appendChild(script);
 
+      // Check localStorage for user info
+      const storedUser = localStorage.getItem('fashionstore_user');
+      if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+      }
+
+      // Cart badge logic
+      const updateCartCount = () => {
+        const saved = localStorage.getItem('fashionstore_cart');
+        if (saved) {
+          const items = JSON.parse(saved);
+          setCartCount(items.reduce((sum: number, item: any) => sum + item.quantity, 0));
+        } else {
+          setCartCount(0);
+        }
+      };
+      updateCartCount();
+      window.addEventListener('storage', updateCartCount);
+
       return () => {
         document.body.removeChild(script);
+        window.removeEventListener('storage', updateCartCount);
       };
     }
   }, []);
@@ -63,6 +87,9 @@ export const Layout: React.FC<Props> = ({ children, currentUser }) => {
               <Link href="/collections/apparel" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">
                 Apparel
               </Link>
+              <Link href="/account" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">
+                My Account
+              </Link>
             </div>
 
             {/* User Actions */}
@@ -84,7 +111,12 @@ export const Layout: React.FC<Props> = ({ children, currentUser }) => {
                     </div>
                     <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Account</Link>
                     <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Orders</Link>
-                    <button onClick={() => (window as any).logout?.()} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <button onClick={() => {
+                      localStorage.removeItem('fashionstore_user');
+                      fetch('/api/logout', { method: 'POST' }).then(() => {
+                        window.location.href = '/';
+                      });
+                    }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       Sign Out
                     </button>
                   </div>
@@ -96,9 +128,11 @@ export const Layout: React.FC<Props> = ({ children, currentUser }) => {
               )}
 
               {/* Cart */}
-              <button onClick={() => (window as any).toggleCart?.()} className="relative text-gray-700 hover:text-gray-900 transition-colors">
+              <button onClick={() => setCartOpen(true)} className="relative text-gray-700 hover:text-gray-900 transition-colors">
                 <i className="fas fa-shopping-cart text-lg"></i>
-                <span id="cartBadge" className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">{cartCount}</span>
+                )}
               </button>
 
               {/* Mobile Menu Button */}
@@ -236,30 +270,9 @@ export const Layout: React.FC<Props> = ({ children, currentUser }) => {
         </div>
       </div>
 
-      {/* Shopping Cart Sidebar */}
-      <div id="cartOverlay" className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" onClick={() => (window as any).toggleCart?.()}></div>
-      <div id="cartSidebar" className="fixed right-0 top-0 h-full w-96 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold">Shopping Cart</h2>
-            <button onClick={() => (window as any).toggleCart?.()} className="text-gray-500 hover:text-gray-700">
-              <i className="fas fa-times text-xl"></i>
-            </button>
-          </div>
-          <div id="cartItems" className="space-y-4 mb-6">
-            {/* Cart items will be populated by JavaScript */}
-          </div>
-          <div className="border-t pt-4">
-            <div className="flex justify-between text-lg font-bold mb-4">
-              <span>Total:</span>
-              <span id="cartTotal">$0.00</span>
-            </div>
-            <button onClick={() => (window as any).goToCheckout?.()} className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium">
-              Checkout
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Cart Sidebar (React) */}
+      {cartOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-[99]" onClick={() => setCartOpen(false)}></div>}
+      <CartSidebar open={cartOpen} onClose={() => setCartOpen(false)} />
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white mt-16">
