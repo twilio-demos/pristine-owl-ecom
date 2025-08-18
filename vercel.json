@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "env": {
+    "SEGMENT_SPACE_ID": "@segment_space_id",
+    "PROFILE_API_KEY": "@profile_api_key", 
+    "SEGMENT_BASE_URL": "@segment_base_url"
+  }
+}

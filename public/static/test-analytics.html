@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Segment Analytics</title>
+    <script src="/static/analytics.js"></script>
+</head>
+<body>
+    <h1>Segment Analytics Test</h1>
+    <button onclick="testEvent()">Send Test Event</button>
+    <div id="output"></div>
+    
+    <script>
+        function log(message) {
+            document.getElementById('output').innerHTML += '<br>' + message;
+            console.log(message);
+        }
+        
+        function testEvent() {
+            log('🧪 Testing Segment Analytics...');
+            log('Analytics object type: ' + typeof analytics);
+            
+            if (typeof analytics !== 'undefined') {
+                log('Analytics object available');
+                log('Analytics ready: ' + (analytics.ready ? 'true' : 'false'));
+                
+                // Test track event
+                analytics.track('Test Button Clicked', {
+                    test_property: 'test_value',
+                    timestamp: new Date().toISOString(),
+                    page: 'test-analytics'
+                });
+                log('✅ Test event sent: Test Button Clicked');
+                
+                // Test identify
+                analytics.identify('test-user-123', {
+                    email: 'test@example.com',
+                    name: 'Test User'
+                });
+                log('✅ Identify event sent: test-user-123');
+                
+                // Test page event
+                analytics.page('Test Page');
+                log('✅ Page event sent: Test Page');
+            } else {
+                log('❌ Analytics object not available');
+            }
+        }
+        
+        // Auto-run test on page load
+        setTimeout(() => {
+            log('Page loaded, running automatic test...');
+            testEvent();
+        }, 2000);
+    </script>
+</body>
+</html>

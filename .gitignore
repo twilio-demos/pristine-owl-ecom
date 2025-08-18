@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+
+# Next.js
+/.next/
+/out/
+
+# Production build
+/build
+/dist
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# dotenv environment variables file
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# PM2 (legacy)
+.pm2/
+pids/
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.bak
+*.tar.gz
+*.zip
+
+# Legacy Cloudflare files
+.wrangler/
+wrangler.jsonc
+vite.config.ts
+ecosystem.config.cjs
+worker/
+.output/

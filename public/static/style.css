@@ -1,0 +1,304 @@
+/* Custom styles for the Fashion Store */
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth transitions for cart sidebar */
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+/* Loading animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Custom scrollbar for cart sidebar */
+#cartSidebar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+#cartSidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#cartSidebar::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+#cartSidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+#cartSidebar::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Product card hover effects */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Flash message animations */
+#flashMessage {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  #cartSidebar {
+    width: 100vw;
+  }
+}
+
+/* Form focus states */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Button hover animations */
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Price display */
+.line-through {
+  text-decoration: line-through;
+}
+
+/* Loading states */
+.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Algolia InstantSearch Hits styling */
+.ais-Hits {
+  display: contents !important;
+}
+
+.ais-Hits-list {
+  display: contents !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ais-Hits-item {
+  display: contents !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  float: none !important;
+}
+
+/* Make sure grid containers maintain their layout */
+#featured-products,
+#new-arrivals,
+[id^="collection-products-"] {
+  display: grid !important;
+}
+
+/* Additional overrides for any conflicting styles */
+.ais-Hits ol,
+.ais-Hits ul {
+  display: contents !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.ais-Hits li {
+  display: contents !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Quick View Modal Styles */
+.z-60 {
+  z-index: 60;
+}
+
+#quickViewModal {
+  backdrop-filter: blur(4px);
+}
+
+#quickViewModal .transform {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.3s ease-out;
+}
+
+#quickViewModal.show .transform {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Product image gallery styles */
+.product-image-main {
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.product-image-thumbnail {
+  aspect-ratio: 1;
+  object-fit: cover;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.product-image-thumbnail:hover {
+  opacity: 0.8;
+}
+
+.product-image-thumbnail.active {
+  border: 2px solid #000;
+}
+
+/* Size selector styles */
+.size-option {
+  transition: all 0.2s;
+}
+
+.size-option:hover {
+  background-color: #f3f4f6;
+}
+
+.size-option.selected {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Quantity selector */
+.quantity-selector button {
+  transition: background-color 0.2s;
+}
+
+.quantity-selector button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Custom badge styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Dropdown animation */
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 200ms, transform 200ms;
+}
+
+.dropdown-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 200ms, transform 200ms;
+}
+
+/* Profile Panel Styles */
+#profilePanel {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.profile-tab {
+  transition: all 0.2s ease;
+}
+
+.profile-tab.active {
+  color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+.profile-content {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Custom scrollbar for profile content */
+.profile-content {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+}
+
+.profile-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.profile-content::-webkit-scrollbar-track {
+  background: #f7fafc;
+}
+
+.profile-content::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 3px;
+}
+
+.profile-content::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
