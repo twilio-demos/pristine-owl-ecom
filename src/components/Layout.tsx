@@ -14,16 +14,24 @@ export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentU
   const [cartOpen, setCartOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(initialCurrentUser || null);
   const [cartCount, setCartCount] = useState(0);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    function handleClick(e: MouseEvent) {
+      const menu = document.getElementById('userMenuDropdown');
+      if (menu && !menu.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [userMenuOpen]);
 
   useEffect(() => {
-    // Load external scripts on client side
+    // Load external scripts on client side (no longer loading app.js)
     if (typeof window !== 'undefined') {
-      // Load app.js which contains all the interactive functionality
-      const script = document.createElement('script');
-      script.src = '/static/app.js';
-      script.async = true;
-      document.body.appendChild(script);
-
       // Check localStorage for user info
       const storedUser = localStorage.getItem('fashionstore_user');
       if (storedUser) {
@@ -44,7 +52,6 @@ export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentU
       window.addEventListener('storage', updateCartCount);
 
       return () => {
-        document.body.removeChild(script);
         window.removeEventListener('storage', updateCartCount);
       };
     }
@@ -87,9 +94,6 @@ export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentU
               <Link href="/collections/apparel" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">
                 Apparel
               </Link>
-              <Link href="/account" className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors">
-                My Account
-              </Link>
             </div>
 
             {/* User Actions */}
@@ -102,24 +106,37 @@ export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentU
               {/* User Menu */}
               {currentUser ? (
                 <div className="relative">
-                  <button onClick={() => (window as any).toggleUserMenu?.()} className="text-gray-700 hover:text-gray-900 transition-colors">
+                  <button
+                    onClick={() => setUserMenuOpen((v) => !v)}
+                    className="text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
+                  >
                     <i className="fas fa-user text-lg"></i>
                   </button>
-                  <div id="userMenu" className="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                    <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                      Hello, {currentUser.name}
+                  {userMenuOpen && (
+                    <div
+                      id="userMenuDropdown"
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-gray-100"
+                    >
+                      <Link
+                        href="/account"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        My Account
+                      </Link>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('fashionstore_user');
+                          fetch('/api/logout', { method: 'POST' }).then(() => {
+                            window.location.href = '/';
+                          });
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign Out
+                      </button>
                     </div>
-                    <Link href="/account" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Account</Link>
-                    <Link href="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Orders</Link>
-                    <button onClick={() => {
-                      localStorage.removeItem('fashionstore_user');
-                      fetch('/api/logout', { method: 'POST' }).then(() => {
-                        window.location.href = '/';
-                      });
-                    }} className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      Sign Out
-                    </button>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <Link href="/login" className="text-gray-700 hover:text-gray-900 transition-colors">

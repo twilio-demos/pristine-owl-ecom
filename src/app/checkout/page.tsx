@@ -42,6 +42,18 @@ export default function Checkout() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // Prefill from user info if available
+    const storedUser = typeof window !== 'undefined' ? localStorage.getItem('fashionstore_user') : null;
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email,
+        phone: user.phone || prev.phone,
+        address: user.address || prev.address
+      }));
+    }
     // Only load cart from localStorage (no auth check)
     const cartData = getCartFromStorage();
     setCart(cartData);
