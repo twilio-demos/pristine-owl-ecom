@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionFromRequest } from '@/lib/session';
+import { getSessionFromCookieString } from '@/lib/session';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getSessionFromRequest();
+    const cookieString = request.headers.get('Cookie');
+    const session = getSessionFromCookieString(cookieString);
 
     if (!session) {
       return NextResponse.json({ isAuthenticated: false });

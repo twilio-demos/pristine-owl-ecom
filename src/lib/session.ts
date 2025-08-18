@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { type SessionData } from '@/types';
 
 // In-memory storage for demo purposes
@@ -37,17 +36,21 @@ export const deleteSession = (sessionId: string) => {
   sessions.delete(sessionId);
 };
 
+// Helper function to get session from cookie string (for API routes)
+export const getSessionFromCookieString = (cookieString: string | null): SessionData | null => {
+  if (!cookieString) return null;
+  
+  const sessionMatch = cookieString.match(/session_id=([^;]+)/);
+  if (!sessionMatch) return null;
+  
+  const sessionId = sessionMatch[1];
+  return getSession(sessionId);
+};
+
+// Simplified session helper for API routes
 export const getSessionFromRequest = async (): Promise<SessionData | null> => {
-  try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get('session_id')?.value;
-    
-    if (!sessionId) return null;
-    
-    return getSession(sessionId);
-  } catch (error) {
-    return null;
-  }
+  // This will be used in API routes with proper cookie handling
+  return null;
 };
 
 // Cart and user management

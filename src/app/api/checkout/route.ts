@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionFromRequest, getUserCart, setUserCart } from '@/lib/session';
+import { getSessionFromCookieString, getUserCart, setUserCart } from '@/lib/session';
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSessionFromRequest();
+    const cookieString = request.headers.get('Cookie');
+    const session = getSessionFromCookieString(cookieString);
     
     if (!session) {
       return NextResponse.json(
