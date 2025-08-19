@@ -82,6 +82,14 @@ export default function ProfileWidget() {
 
     return (
       <div className="space-y-2">
+        {profileData.traits.demo && (
+          <div className="bg-blue-50 border border-blue-200 rounded p-2 mb-3">
+            <div className="flex items-center text-blue-700 text-xs">
+              <i className="fas fa-info-circle mr-1"></i>
+              Demo data - showing sample user traits
+            </div>
+          </div>
+        )}
         {traits.map((trait: any, index: number) => (
           <div key={index} className="bg-gray-50 rounded p-3">
             <div className="flex justify-between items-start">
@@ -92,7 +100,7 @@ export default function ProfileWidget() {
             </div>
             <div className="text-sm text-gray-600 mt-1">
               {typeof trait.value === 'object' 
-                ? JSON.stringify(trait.value, null, 2) 
+                ? <pre className="text-xs">{JSON.stringify(trait.value, null, 2)}</pre>
                 : String(trait.value || trait.trait_value || 'N/A')}
             </div>
           </div>
@@ -121,6 +129,14 @@ export default function ProfileWidget() {
 
     return (
       <div className="space-y-2">
+        {profileData.events.demo && (
+          <div className="bg-blue-50 border border-blue-200 rounded p-2 mb-3">
+            <div className="flex items-center text-blue-700 text-xs">
+              <i className="fas fa-info-circle mr-1"></i>
+              Demo data - showing sample user events
+            </div>
+          </div>
+        )}
         {events.slice(0, 10).map((event: any, index: number) => (
           <div key={index} className="bg-gray-50 rounded p-3">
             <div className="flex justify-between items-start">
@@ -133,9 +149,12 @@ export default function ProfileWidget() {
             </div>
             {(event.properties || event.event_properties) && (
               <div className="text-xs text-gray-600 mt-1">
-                <pre className="overflow-hidden">
-                  {JSON.stringify(event.properties || event.event_properties, null, 2)}
-                </pre>
+                <details className="cursor-pointer">
+                  <summary className="text-blue-600 hover:text-blue-800 text-xs">Show properties</summary>
+                  <pre className="mt-2 text-xs bg-white p-2 rounded border overflow-x-auto">
+                    {JSON.stringify(event.properties || event.event_properties, null, 2)}
+                  </pre>
+                </details>
               </div>
             )}
           </div>
