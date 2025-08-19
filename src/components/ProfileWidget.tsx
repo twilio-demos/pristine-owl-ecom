@@ -8,6 +8,33 @@ interface ProfileData {
   identities?: Array<any>;
 }
 
+function getAnonymousId(): string {
+  // Try Segment Analytics.js if available
+  if (typeof window !== 'undefined' && (window as any).analytics && typeof (window as any).analytics.user === 'function') {
+    try {
+      let id = (window as any).analytics.user().anonymousId();
+      if (id) id = id.replace(/^"|"$/g, '');
+      if (id) return id;
+    } catch {}
+  }
+  // Fallback to localStorage
+  let id = '';
+  if (typeof window !== 'undefined') {
+    id = localStorage.getItem('ajs_anonymous_id') || '';
+    if (id) id = id.replace(/^"|"$/g, '');
+    if (id) return id;
+    // Generate new if not found
+    id = 'xxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    }) + '-' + Date.now().toString(36);
+    localStorage.setItem('ajs_anonymous_id', '"' + id + '"');
+    return id;
+  }
+  return '';
+}
+
 export default function ProfileWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,11 +45,7 @@ export default function ProfileWidget() {
 
   // Generate or get anonymous ID
   useEffect(() => {
-    let id = localStorage.getItem('segment_anonymous_id');
-    if (!id) {
-      id = 'anonymous_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
-      localStorage.setItem('segment_anonymous_id', id);
-    }
+    let id = getAnonymousId();
     setAnonymousId(id);
   }, []);
 
@@ -189,7 +212,7 @@ export default function ProfileWidget() {
           <div key={index} className="bg-gray-50 rounded p-3">
             <div className="flex justify-between items-start">
               <span className="font-medium text-sm text-gray-900">
-                {identity.collection || identity.type || identity.id_type || 'Identity'}
+                {identity.type ? `${identity.type}:` : 'Identity:'}
               </span>
               <span className="text-xs text-gray-500">
                 {identity.timestamp ? new Date(identity.timestamp).toLocaleDateString() : ''}

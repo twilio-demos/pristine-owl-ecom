@@ -20,10 +20,13 @@ export async function GET(
     }
 
     const resolvedParams = await params;
+    const { anonymousId } = resolvedParams;
     const auth = Buffer.from(`${profileApiKey}:`).toString('base64');
+    // Properly encode the anonymousId
+    const encodedId = encodeURIComponent(anonymousId);
     
     // Use the correct Segment Profile API endpoint format
-    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${resolvedParams.anonymousId}/traits?limit=${limit}`;
+    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${encodedId}/traits?limit=${limit}`;
 
     const response = await fetch(url, {
       method: 'GET',
