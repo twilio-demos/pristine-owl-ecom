@@ -4,6 +4,7 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import CartSidebar from './CartSidebar';
+import ProfileWidget from './ProfileWidget';
 
 interface Props {
   children: ReactNode;
@@ -200,92 +201,8 @@ export const Layout: React.FC<Props> = ({ children, currentUser: initialCurrentU
         </div>
       </div>
 
-      {/* Profile Button */}
-      <button 
-        id="profileButton" 
-        onClick={() => (window as any).toggleProfilePanel?.()} 
-        className="fixed bottom-6 left-6 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-[100] flex items-center justify-center cursor-pointer"
-        title="View Segment Profile"
-        style={{pointerEvents: 'auto'}}
-      >
-        <i className="fas fa-user text-lg"></i>
-      </button>
-
-      {/* Profile Panel - Complex component kept as-is with ids for JS interaction */}
-      <div id="profileOverlay" className="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" onClick={() => (window as any).toggleProfilePanel?.()}></div>
-      <div id="profilePanel" className="fixed left-6 bottom-20 w-[576px] max-w-[calc(100vw-3rem)] bg-white rounded-lg shadow-xl transform translate-y-full opacity-0 transition-all duration-300 z-50">
-        <div className="p-4">
-          {/* Panel Header */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 id="profileTitle" className="text-lg font-bold text-gray-900">Segment Profile</h2>
-            <button onClick={() => (window as any).toggleProfilePanel?.()} className="text-gray-400 hover:text-gray-600">
-              <i className="fas fa-times text-lg"></i>
-            </button>
-          </div>
-          
-          {/* Loading State */}
-          <div id="profileLoading" className="text-center py-8">
-            <div className="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full"></div>
-            <p className="mt-2 text-gray-600 text-sm">Loading profile data...</p>
-          </div>
-          
-          {/* Tabs */}
-          <div id="profileTabs" className="hidden">
-            <div className="flex border-b border-gray-200 mb-4">
-              <button 
-                onClick={() => (window as any).switchProfileTab?.('traits')} 
-                className="profile-tab flex-1 py-2 px-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 active"
-                data-tab="traits"
-              >
-                Traits
-              </button>
-              <button 
-                onClick={() => (window as any).switchProfileTab?.('events')} 
-                className="profile-tab flex-1 py-2 px-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                data-tab="events"
-              >
-                Events
-              </button>
-              <button 
-                onClick={() => (window as any).switchProfileTab?.('identities')} 
-                className="profile-tab flex-1 py-2 px-4 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300"
-                data-tab="identities"
-              >
-                Identities
-              </button>
-            </div>
-            
-            {/* Tab Content */}
-            <div className="max-h-80 overflow-y-auto">
-              {/* Tabs content handled by JavaScript */}
-              <div id="traitsContent" className="profile-content">
-                <div className="space-y-2"></div>
-              </div>
-              <div id="eventsContent" className="profile-content hidden">
-                <div className="space-y-2"></div>
-              </div>
-              <div id="identitiesContent" className="profile-content hidden">
-                <div className="space-y-2"></div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Error State */}
-          <div id="profileError" className="hidden text-center py-8">
-            <i className="fas fa-exclamation-triangle text-yellow-500 text-2xl mb-2"></i>
-            <p className="text-gray-600 text-sm">Unable to load profile data</p>
-            <p id="errorDetails" className="text-gray-500 text-xs mt-2"></p>
-            <button onClick={() => (window as any).loadSegmentProfile?.()} className="mt-2 text-blue-600 hover:text-blue-800 text-sm underline">
-              Try Again
-            </button>
-          </div>
-          
-          {/* Debug Info */}
-          <div id="profileDebug" className="text-center py-4 border-t">
-            <p className="text-xs text-gray-500">Anonymous ID: <span id="debugAnonymousId" className="font-mono"></span></p>
-          </div>
-        </div>
-      </div>
+      {/* Profile Widget (React Component) */}
+      <ProfileWidget />
 
       {/* Cart Sidebar (React) */}
       {cartOpen && <div className="fixed inset-0 bg-black bg-opacity-50 z-[99]" onClick={() => setCartOpen(false)}></div>}

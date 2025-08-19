@@ -110,7 +110,7 @@ const CartSidebar: React.FC<{
             className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition-colors font-medium"
             disabled={cart.length === 0}
             onClick={() => {
-              if (cart.length > 0) router.push('/checkout');
+              if (cart.length > 0) router.push('/checkout/shipping');
             }}
           >
             Checkout

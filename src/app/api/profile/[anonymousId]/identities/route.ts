@@ -6,7 +6,7 @@ export async function GET(
 ) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = searchParams.get('limit') || '25';
+    const limit = searchParams.get('limit') || '50';
 
     const segmentSpaceId = process.env.SEGMENT_SPACE_ID;
     const profileApiKey = process.env.PROFILE_API_KEY;
@@ -20,9 +20,13 @@ export async function GET(
     }
 
     const resolvedParams = await params;
+    const { anonymousId } = resolvedParams;
     const auth = Buffer.from(`${profileApiKey}:`).toString('base64');
-    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${resolvedParams.anonymousId}/external_ids?limit=${limit}`;
-
+    // Properly encode the anonymousId
+    const encodedId = encodeURIComponent(anonymousId);
+    
+    // Use the correct Segment Profile API endpoint format for external IDs
+    const url = `${segmentBaseUrl}/v1/spaces/${segmentSpaceId}/collections/users/profiles/anonymous_id:${encodedId}/external_ids`;
 
     const response = await fetch(url, {
       method: 'GET',
@@ -36,12 +40,13 @@ export async function GET(
       const errorText = await response.text();
       console.error('Segment Profile API error:', response.status, errorText);
       return NextResponse.json(
-        { error: `Segment API error: ${response.status}` },
+        { error: `Segment API error: ${response.status} - ${errorText}` },
         { status: response.status }
       );
     }
 
     const data = await response.json();
+    console.log('Segment Profile API response:', data);
     return NextResponse.json(data);
 
   } catch (error) {
