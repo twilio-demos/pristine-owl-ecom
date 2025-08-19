@@ -82,14 +82,6 @@ export default function ProfileWidget() {
 
     return (
       <div className="space-y-2">
-        {profileData.traits.demo && (
-          <div className="bg-blue-50 border border-blue-200 rounded p-2 mb-3">
-            <div className="flex items-center text-blue-700 text-xs">
-              <i className="fas fa-info-circle mr-1"></i>
-              Demo data - showing sample user traits
-            </div>
-          </div>
-        )}
         {traits.map((trait: any, index: number) => (
           <div key={index} className="bg-gray-50 rounded p-3">
             <div className="flex justify-between items-start">
@@ -129,14 +121,6 @@ export default function ProfileWidget() {
 
     return (
       <div className="space-y-2">
-        {profileData.events.demo && (
-          <div className="bg-blue-50 border border-blue-200 rounded p-2 mb-3">
-            <div className="flex items-center text-blue-700 text-xs">
-              <i className="fas fa-info-circle mr-1"></i>
-              Demo data - showing sample user events
-            </div>
-          </div>
-        )}
         {events.slice(0, 10).map((event: any, index: number) => (
           <div key={index} className="bg-gray-50 rounded p-3">
             <div className="flex justify-between items-start">
