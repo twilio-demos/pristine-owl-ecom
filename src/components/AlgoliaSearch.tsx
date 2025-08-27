@@ -10,6 +10,7 @@ import {
   Configure,
 } from "react-instantsearch-dom";
 import searchClient from "@/lib/algoliaClient";
+import Image from "next/image";
 
 interface AlgoliaSearchProps {
   indexName: string;
@@ -30,11 +31,12 @@ const Hit = ({ hit, onQuickView }: { hit: any; onQuickView: (hit: any) => void }
   return (
     <div className="group bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="relative">
-        <img
+        <Image
           src={hit.images && hit.images[0] ? hit.images[0].url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop"}
           alt={hit.name}
+          width={500}
+          height={500}
           className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-          loading="lazy"
         />
         {hit.badges?.isNewProduct && (
           <span className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs font-medium rounded">New</span>
@@ -144,16 +146,18 @@ function QuickViewModal({ hit, onClose }: { hit: any; onClose: () => void }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Product Images */}
           <div>
-            <img
+            <Image
               src={hit.images && hit.images[0] ? hit.images[0].url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&h=500&fit=crop"}
               alt={hit.name}
+              width={500}
+              height={500}
               className="w-full h-64 object-cover rounded-lg mb-4"
             />
             {/* Additional images */}
             {hit.images && hit.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {hit.images.slice(0, 4).map((img: any, idx: number) => (
-                  <img key={idx} src={img.url} alt={hit.name} className="w-full h-16 object-cover rounded-md border" />
+                  <Image key={idx} src={img.url} alt={hit.name} width={64} height={64} className="w-full h-16 object-cover rounded-md border" />
                 ))}
               </div>
             )}
@@ -263,7 +267,7 @@ const AlgoliaSearch: React.FC<AlgoliaSearchProps> = ({
         {showSearchBox && <SearchBox translations={{ placeholder: "Search products..." }} />}
         {/* <Stats translations={{ stats(nbHits: number, timeSpentMS: number) { return `${nbHits} products found`; } }} /> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <Hits hitComponent={({ hit }) => <Hit hit={hit} onQuickView={setQuickViewHit} />} />
+          <Hits hitComponent={({ hit }: { hit: any }) => <Hit hit={hit} onQuickView={setQuickViewHit} />} />
         </div>
         <div className="flex justify-center mt-12">
           <Pagination />

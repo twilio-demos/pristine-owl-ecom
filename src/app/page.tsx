@@ -4,6 +4,7 @@ import { Layout } from '@/components/Layout';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import AlgoliaSearch from '@/components/AlgoliaSearch';
+import Image from 'next/image';
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -53,9 +54,11 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           <Link href="/collections/new-arrivals" className="group relative overflow-hidden rounded-lg">
             <div className="aspect-square bg-gray-200">
-              <img 
+              <Image 
                 src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop" 
                 alt="New Arrivals" 
+                width={400}
+                height={400}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -66,9 +69,11 @@ export default function Home() {
 
           <Link href="/collections/men" className="group relative overflow-hidden rounded-lg">
             <div className="aspect-square bg-gray-200">
-              <img 
+              <Image 
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" 
                 alt="Men's Collection" 
+                width={400}
+                height={400}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -79,9 +84,11 @@ export default function Home() {
 
           <Link href="/collections/women" className="group relative overflow-hidden rounded-lg">
             <div className="aspect-square bg-gray-200">
-              <img 
+              <Image 
                 src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=300&fit=crop" 
                 alt="Women's Collection" 
+                width={400}
+                height={400}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
@@ -115,9 +122,11 @@ export default function Home() {
               </Link>
             </div>
             <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img 
+              <Image 
                 src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&h=600&fit=crop" 
                 alt="About Lawson Reinhardt" 
+                width={600}
+                height={600}
                 className="w-full h-full object-cover"
               />
             </div>

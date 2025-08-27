@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 
 interface CartItem {
   id: string;
@@ -34,9 +35,11 @@ export default function CheckoutSummary({ items, total, shipping = 0, tax = 0 }:
         {items.map((item) => (
           <div key={`${item.id}-${item.size}-${item.color}`} className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
-              <img 
+              <Image 
                 src={item.product.image} 
                 alt={item.product.name}
+                width={64}
+                height={64}
                 className="w-full h-full object-cover"
               />
             </div>

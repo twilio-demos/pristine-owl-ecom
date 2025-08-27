@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 interface ProfileData {
-  traits?: Record<string, any>;
-  events?: Array<any>;
-  identities?: Array<any>;
+  traits?: Record<string, any> | { error?: string; traits?: Array<any>; data?: Array<any> };
+  events?: Record<string, any> | { error?: string; events?: Array<any>; data?: Array<any> };
+  identities?: Record<string, any> | { error?: string; identities?: Array<any>; data?: Array<any> };
 }
 
 function getAnonymousId(): string {
@@ -43,20 +43,7 @@ export default function ProfileWidget() {
   const [profileData, setProfileData] = useState<ProfileData>({});
   const [anonymousId, setAnonymousId] = useState<string>('');
 
-  // Generate or get anonymous ID
-  useEffect(() => {
-    let id = getAnonymousId();
-    setAnonymousId(id);
-  }, []);
-
-  // Load profile data when opened
-  useEffect(() => {
-    if (isOpen && anonymousId && !profileData.traits) {
-      loadProfileData();
-    }
-  }, [isOpen, anonymousId]);
-
-  const loadProfileData = async () => {
+  const loadProfileData = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -79,7 +66,20 @@ export default function ProfileWidget() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [anonymousId]);
+
+  // Generate or get anonymous ID
+  useEffect(() => {
+    let id = getAnonymousId();
+    setAnonymousId(id);
+  }, []);
+
+  // Load profile data when opened
+  useEffect(() => {
+    if (isOpen && anonymousId) {
+      loadProfileData();
+    }
+  }, [isOpen, anonymousId, loadProfileData]);
 
   const togglePanel = () => {
     setIsOpen(!isOpen);
@@ -184,7 +184,7 @@ export default function ProfileWidget() {
       );
     }
 
-    const identities = profileData.identities.external_ids || profileData.identities.data || profileData.identities;
+    const identities = (profileData.identities as any)?.external_ids || (profileData.identities as any)?.data || profileData.identities;
     
     // Handle different response formats
     let identityArray = [];

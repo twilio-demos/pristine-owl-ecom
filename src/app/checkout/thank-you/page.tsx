@@ -1,8 +1,9 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
+import Image from 'next/image';
 
-export default function ThankYouPage() {
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
   const total = searchParams.get('total');
@@ -25,7 +26,7 @@ export default function ThankYouPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
           <h1 className="text-2xl font-bold mb-4">Order Not Found</h1>
-          <p className="mb-4">We couldn't find your order details. Please check your email for confirmation or contact support.</p>
+          <p className="mb-4">We couldn&apos;t find your order details. Please check your email for confirmation or contact support.</p>
           <button className="mt-4 px-6 py-2 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-colors" onClick={() => router.push('/')}>Return to Home</button>
         </div>
       </div>
@@ -57,7 +58,7 @@ export default function ThankYouPage() {
             <div className="divide-y divide-gray-200">
               {order.items.map((item: any, idx: number) => (
                 <div key={idx} className="py-2 flex items-center">
-                  <img src={item.product.image} alt={item.product.name} className="w-12 h-12 object-cover rounded mr-3 border" />
+                  <Image src={item.product.image} alt={item.product.name} width={48} height={48} className="object-cover rounded mr-3 border" />
                   <div className="flex-1">
                     <div className="font-medium">{item.product.name}</div>
                     <div className="text-xs text-gray-500">{item.size && `Size: ${item.size} `}{item.color && `Color: ${item.color}`}</div>
@@ -78,5 +79,20 @@ export default function ThankYouPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-blue-600 rounded-full"></div>
+          <p className="mt-2 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ThankYouContent />
+    </Suspense>
   );
 }

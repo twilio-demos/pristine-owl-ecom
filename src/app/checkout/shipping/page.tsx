@@ -19,8 +19,21 @@ function getCartFromStorage() {
   return { items: [], total: 0 };
 }
 
+interface CheckoutFormData {
+  email: string;
+  name: string;
+  phone: string;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  shippingMethod: string;
+}
+
 // Helper to get checkout data from localStorage
-function getCheckoutData() {
+function getCheckoutData(): CheckoutFormData {
   try {
     const saved = localStorage.getItem('fashionstore_checkout_data');
     if (saved) {
@@ -45,7 +58,7 @@ export default function CheckoutShipping() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState(null);
   const [cart, setCart] = useState({ items: [], total: 0 });
-  const [formData, setFormData] = useState(getCheckoutData());
+  const [formData, setFormData] = useState<CheckoutFormData>(getCheckoutData());
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {

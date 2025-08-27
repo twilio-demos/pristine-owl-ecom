@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface CartProduct {
   id: string;
@@ -83,7 +84,7 @@ const CartSidebar: React.FC<{
           ) : (
             cart.map((item) => (
               <div key={item.productId + item.size} className="flex items-center space-x-3 p-3 border-b">
-                <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded" />
+                <Image src={item.product.image} alt={item.product.name} width={64} height={64} className="object-cover rounded" />
                 <div className="flex-1">
                   <h4 className="font-medium text-sm">{item.product.name}</h4>
                   <p className="text-xs text-gray-500">{item.size}, {item.color}</p>
